@@ -1,6 +1,9 @@
 #importation des bibliotheques
 import pygame
 import argparse
+import logging
+import sys
+
 #initialisation des modules
 pygame.init() 
 
@@ -32,21 +35,42 @@ parser.add_argument('--fps',type=int,default=FPS, help='number of frames per sec
 parser.add_argument('--fruit-color',default=FRUIT_COLOR,help='color of the fruit')
 parser.add_argument('--snake-color',default=SNAKE_COLOR,help='snake color')
 parser.add_argument('--snake-length',type=int, help='initial length of the snake')
-parser.add_argument('--tile-size', type=int, help='size of a square tile')
+parser.add_argument('--tile-size', type=int,default=TILE_SIZE, help='size of a square tile')
 parser.add_argument('--gameover-on-exit',help='quit the game if the snake is out of screen')
+
+#ajout argument debug 
+parser.add_argument('-g','--debug', help='débogage')
+
 args=parser.parse_args()
 print(args)
+
+#configuration du root logger 
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler(sys.stderr)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 #on vérifie les conditions
 
 if [(args.height)%(args.tile_size) !=0] or args.height//(args.tile_size)<12:
     raise ValueError
+    logger.debug("la hauteur de l'écran n'est pas bonne.") 
+
 elif [(args.width)%(args.tile_size) !=0] or args.widht//(args.tile_size)<20:
     raise ValueError
+    logger.debug("la largeur de l'écran n'est pas bonne.") 
+
 elif args.snake_length < 2:
     raise ValueError
+    logger.warning("le serpent initial est trop court.")
+
 elif args.snake_color==args.bg_color_1 or args.snake_color==args.bg_color_2:
     raise ValueError
+    logger.warning('la couleur du serpent est identique à celle du damier.')
+
+
+
 
 
 #fruits pour l'étape où le serpent mange successivement deux fruits prédéfinis
@@ -106,7 +130,7 @@ while running:
 
             if event.key == pygame.K_q:
                 running=False  #on quitte le jeu si q est pressé
-
+                logger.critical('Vous avez quitté le jeu.')
             elif event.key==pygame.K_UP:
                 direction=UP
             elif event.key==pygame.K_DOWN:
@@ -117,6 +141,7 @@ while running:
                 direction=LEFT
         elif event.type==pygame.QUIT:
             running=False
+            logger.critical('Vous avez quitté le jeu.')
 
     #nouveau serpent
     if snake[-1]==fruit1: #si on rencontre le fruit 1 on grandit donc on ne retire pas le dernier carré et on en ajoute un nouveau
@@ -132,14 +157,14 @@ while running:
         fruit=fruit1
         Score+=1
         pygame.display.set_caption("Snake Pygame - Score: {}".format(Score)) #mise à jour du score
-    
+        logger.info('le serpent a mangé un fruit.')
     else : 
         snake.pop(0) 
         new_head=tuple(x+y for x,y in zip(snake[-1],direction))
         snake.append(new_head)
     
     #on appelle la fonction status_game pour terminer le jeu où modifier la tête du serpent selon que l'on a passé l'argument gameover on exit ou non
-    status_game(args.gameover_on_exit,snake,args.height,args.width,args.tile_size,running)  
+    status_game(args.gameover_on_exit)  
 
     #affichage de l'écran
     screen.fill( args.bg_color_1 ) 
