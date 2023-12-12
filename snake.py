@@ -120,6 +120,19 @@ def status_game(gameover_on_exit,serpent,hauteur,largeur,taillecase,run):
             serpent.pop()
             serpent.append(head)
 
+
+def collision(serpent,run):
+    #copie du nouveau serpent
+    snake_copy=serpent.copy() 
+
+    #on extrait la nouvelle tête et on la supprime de la copie du snake
+    new_headd=snake_copy.pop() 
+
+    #on vérifie que la nouvelle tête ne partage pas la même case qu'un autre bout du corps
+    if new_headd in snake_copy : 
+        run=False
+    
+
 running=True #flag
 while running:
 
@@ -163,8 +176,12 @@ while running:
         new_head=tuple(x+y for x,y in zip(snake[-1],direction))
         snake.append(new_head)
     
+    
     #on appelle la fonction status_game pour terminer le jeu où modifier la tête du serpent selon que l'on a passé l'argument gameover on exit ou non
-    status_game(args.gameover_on_exit)  
+    status_game(args.gameover_on_exit,snake,args.height,args.width,args.tile_size,running) 
+
+    #on appelle la fonction collision pour vérifier que l'on ne se marche pas sur la queue 
+    collision(snake,running)
 
     #affichage de l'écran
     screen.fill( args.bg_color_1 ) 
