@@ -12,7 +12,7 @@ SCREEN_COLOR2=(255,255,255)
 SNAKE_COLOR=(0,255,0)
 FRUIT_COLOR=(255,0,0)
 WHITE=(255,255,255)
-FPS=3
+FPS=10
 TILE_SIZE=20
 LINE=HEIGHT//TILE_SIZE
 COLUMN=WIDTH//TILE_SIZE
@@ -33,7 +33,7 @@ parser.add_argument('--fruit-color',default=FRUIT_COLOR,help='color of the fruit
 parser.add_argument('--snake-color',default=SNAKE_COLOR,help='snake color')
 parser.add_argument('--snake-length',type=int, help='initial length of the snake')
 parser.add_argument('--tile-size', type=int, help='size of a square tile')
-parser.add_argument('--gameover-on-exit',help='quit the game if the snake is out of screen and ')
+parser.add_argument('--gameover-on-exit',help='quit the game if the snake is out of screen')
 args=parser.parse_args()
 print(args)
 
@@ -49,8 +49,6 @@ elif args.snake_color==args.bg_color_1 or args.snake_color==args.bg_color_2:
     raise ValueError
 
 
-
-
 #fruits pour l'étape où le serpent mange successivement deux fruits prédéfinis
 fruit1=(3,3)
 fruit2=(15,10)
@@ -64,6 +62,39 @@ snake=[(5,10),(6,10),(7,10)]
 direction=RIGHT
 fruit=fruit1
 Score=0
+
+
+#fonction qui termine le jeu si gameover on exit est passé en ligne de commande et loupe le snake sinon
+def status_game(gameover_on_exit,serpent,hauteur,largeur,taillecase,run):
+    if gameover_on_exit:
+        if serpent[-1][0]>=hauteur//taillecase or serpent[-1][0]<0:
+            run=False
+        elif serpent[-1][1]>=largeur//taillecase or serpent[-1][1]<0:
+            run=False
+    else :
+        #si on va trop bas on remonte la tête à la première ligne
+        if serpent[-1][0]>=hauteur//taillecase : 
+            head=(0,serpent[-1][1])
+            serpent.pop()
+            serpent.append(head)
+
+        #si on va trop haut on redescend la tête à la dernière ligne
+        elif serpent[-1][0] < 0 :  
+            head=(hauteur//taillecase-1,serpent[-1][1])
+            serpent.pop()
+            serpent.append(head)
+
+        #si on va trop pas droite on ramène la tête tout à gauche
+        elif serpent[-1][1]>=largeur//taillecase:
+            head=(serpent[-1][0],0)
+            serpent.pop()
+            serpent.append(head)
+        
+        #si on va trop pas gauche on ramène la tête tout à droite 
+        elif serpent[-1][1]<0:
+            head=(serpent[-1][0],largeur//taillecase-1)
+            serpent.pop()
+            serpent.append(head)
 
 running=True #flag
 while running:
@@ -106,7 +137,10 @@ while running:
         snake.pop(0) 
         new_head=tuple(x+y for x,y in zip(snake[-1],direction))
         snake.append(new_head)
-        
+    
+    #on appelle la fonction status_game pour terminer le jeu où modifier la tête du serpent selon que l'on a passé l'argument gameover on exit ou non
+    status_game(args.gameover_on_exit,snake,args.height,args.width,args.tile_size,running)  
+
     #affichage de l'écran
     screen.fill( args.bg_color_1 ) 
 
