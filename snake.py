@@ -4,6 +4,7 @@ import argparse
 import logging
 import sys
 import random as rd
+import re 
 #initialisation des modules
 pygame.init() 
 
@@ -19,10 +20,10 @@ FPS=10
 TILE_SIZE=20
 LINE=HEIGHT//TILE_SIZE
 COLUMN=WIDTH//TILE_SIZE
-UP=(0,-1) #la ligne 0 est en haut donc il faut retrancher 1 pour monter 
-DOWN=(0,1)
-RIGHT=(1,0)
-LEFT=(-1,0)
+UP=(1,0) 
+DOWN=(-1,0)
+RIGHT=(0,1)
+LEFT=(0,-1)
 
 #configuration du root logger 
 logger = logging.getLogger(__name__)
@@ -31,44 +32,31 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 logger.setLevel(logging.DEBUG)
 
-def read_args(): 
-    #on ajoute tous les arguments 
-    parser = argparse.ArgumentParser(description='Some description.')
-    parser.add_argument('--bg-color-1',default=SCREEN_COLOR1, help=' first color of the background checkerboard.')
-    parser.add_argument('--bg-color-2',default=SCREEN_COLOR2,help='second color of the background checkerboard')
-    parser.add_argument('--height',default=HEIGHT,type=int, help='window height')
-    parser.add_argument('--width',default=WIDTH,type=int, help='window width')
-    parser.add_argument('--fps',type=int,default=FPS, help='number of frames per second')
-    parser.add_argument('--fruit-color',default=FRUIT_COLOR,help='color of the fruit')
-    parser.add_argument('--snake-color',default=SNAKE_COLOR,help='snake color')
-    parser.add_argument('--snake-length',type=int, help='initial length of the snake')
-    parser.add_argument('--tile-size', type=int,default=TILE_SIZE, help='size of a square tile')
-    parser.add_argument('--gameover-on-exit',help='quit the game if the snake is out of screen')
 
-    #ajout argument debug 
-    parser.add_argument('-g','--debug', help='débogage')
 
-    args=parser.parse_args()
-    print(args)
+    
 
-    #on vérifie les conditions
+""""def liste_score(args):
+    "construit la liste des scores et la renvoie triée ainsi que la liste des noms correspondant"
+    list_score=[]
+    list_name=[]
+    with open('temporaire.txt', 'w') as f:
+        for line in f :
+            nom, score = line.split
+            list_score.append(score)
+            list_name.append(nom)
+    #créer un dico trier la liste extraite reconstruire le dico 
+    
+    return(liste_score)
 
-    if [(args.height)%(args.tile_size) !=0] or args.height//(args.tile_size)<12:
-        raise ValueError
-        logger.debug("la hauteur de l'écran n'est pas bonne.") 
 
-    elif [(args.width)%(args.tile_size) !=0] or args.widht//(args.tile_size)<20:
-        raise ValueError
-        logger.debug("la largeur de l'écran n'est pas bonne.") 
 
-    elif args.snake_length < 2:
-        raise ValueError
-        logger.warning("le serpent initial est trop court.")
-
-    elif args.snake_color==args.bg_color_1 or args.snake_color==args.bg_color_2:
-        raise ValueError
-        logger.warning('la couleur du serpent est identique à celle du damier.')
-
+def update_score(liste ,new_score,fichier):
+    cette fonction prend le nouveau score et l'ajoute au fichier score_file si il fait parti du top 5. Si c'est un high score on demande le nom au joueur
+    if new_score>liste[0]:
+        lowest_score=liste.pop()
+        on accède au score. il faut maintenant modifier le fichier pour supprimer le plus petit score et le remplacer par ce nouveau
+        """
 
 
 #fonction qui termine le jeu si gameover on exit est passé en ligne de commande et loupe le snake sinon
@@ -133,20 +121,20 @@ def draw_checkerboard(ecran,color1, color2,largeur,hauteur,taillecase):
 
 def draw_fruit(ecran,color_fruit,taillecase,Fruit):
     """affichage du fruit"""
-    fruit_rect=pygame.Rect(Fruit[0]*taillecase,Fruit[1]*taillecase,taillecase,taillecase)
+    fruit_rect=pygame.Rect(Fruit[1]*taillecase,Fruit[0]*taillecase,taillecase,taillecase)
     pygame.draw.rect(ecran,color_fruit,fruit_rect)
 
 def draw_snake(ecran,serpent,taillecase,couleur_serpent):
     """affichage du serpent"""
     for elem in serpent :
-        point=pygame.Rect(elem[0]*taillecase,elem[1]*taillecase,taillecase,taillecase)
+        point=pygame.Rect(elem[1]*taillecase,elem[0]*taillecase,taillecase,taillecase)
         pygame.draw.rect(ecran,couleur_serpent,point)
     
 def draw(ecran,color1, color2,color_fruit,couleur_serpent,largeur,hauteur,taillecase,Fruit,serpent):
     #on appelle toutes les fonctions draw_* en leur passant leurs arguments respectifs
     
     #d'abord le checkerboard
-    draw_checkerboard(color1, color2,largeur,hauteur,taillecase)
+    draw_checkerboard(ecran,color1, color2,largeur,hauteur,taillecase)
 
     #ensuite le fruit
     draw_fruit(ecran,color_fruit,taillecase,Fruit)
@@ -207,13 +195,40 @@ def update_display(ecran,color1, color2,color_fruit,couleur_serpent,largeur,haut
     pygame.display.set_caption("Snake Pygame - Score: {}".format(score)) #mise à jour du score
     pygame.display.update() #mise à jour de l'écran
 
-def main():
-    #on lit les arguments et on vérifie les conditions
-    read_args()
+def main(*args):
+
+
+
+    #on ajoute tous les arguments 
+    parser = argparse.ArgumentParser(description='Some description.')
+    parser.add_argument('--bg-color-1',default=SCREEN_COLOR1, help=' first color of the background checkerboard.')
+    parser.add_argument('--bg-color-2',default=SCREEN_COLOR2,help='second color of the background checkerboard')
+    parser.add_argument('--height',default=HEIGHT,type=int, help='window height')
+    parser.add_argument('--width',default=WIDTH,type=int, help='window width')
+    parser.add_argument('--fps',type=int,default=FPS, help='number of frames per second')
+    parser.add_argument('--fruit-color',default=FRUIT_COLOR,help='color of the fruit')
+    parser.add_argument('--snake-color',default=SNAKE_COLOR,help='snake color')
+    parser.add_argument('--snake-length',type=int, help='initial length of the snake')
+    parser.add_argument('--tile-size', type=int,default=TILE_SIZE, help='size of a square tile')
+    parser.add_argument('--gameover-on-exit', action='store_true', help='quit the game if we exit the screen')
+
+    #ajout argument debug 
+    parser.add_argument('--debug', action='store_true', help='Enable debug mode')
+
+    #ajout des arguments high score 
+    parser.add_argument('--high-scores-file', default='$HOME/.snake_scores.txt',help='set the path to the high scores file')
+    parser.add_argument('--max-high-scores', default='5', help='set the maximum number of high scores to store')
+
+    #on lit les arguments
+    args=parser.parse_args()
+    print(args)
+
+    
     #création de l'écran
     screen=pygame.display.set_mode((args.width,args.height))
     clock = pygame.time.Clock()
     pygame.display.set_caption("Snake - Score: 0")
+    
     #état initial
     snake=[(5,10),(6,10),(7,10)]
     direction=RIGHT
@@ -230,7 +245,7 @@ def main():
         move_snake(snake,fruit,direction)
 
         #on compute le nouveau score si le serpent a mangé un fruit
-        get_score(update_fruit,Score) 
+        get_score(update_fruit(snake,fruit,args.height,args.width),Score) 
 
         #on appelle la fonction status_game pour terminer le jeu où modifier la tête du serpent selon que l'on a passé l'argument gameover on exit ou non
         status_game(args.gameover_on_exit,snake,args.height,args.width,args.tile_size,running)  
@@ -239,7 +254,10 @@ def main():
         collision(running,snake)
 
         #on appelle la fonction update_display qui appelle draw et met à jour l'écran
-        update_display(screen,args.bg_color_1,args.bg_color_2,args.fruit_color,args.snake_color,args.width,args.heigth,args.tile_size,fruit,snake,Score)
-
+        update_display(screen,args.bg_color_1,args.bg_color_2,args.fruit_color,args.snake_color,args.width,args.height,args.tile_size,fruit,snake,Score)
+    
+    pygame.quit()
+    
 #on appelle main
-main()
+if __name__ == "__main__":
+    main()
