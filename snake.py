@@ -160,7 +160,7 @@ def process_event(run,Direction):
                 Direction=LEFT
         elif event.type==pygame.QUIT:
             run=False
-            logger.critical('Vous avez quitté le jeu.')
+            logger.info('Vous avez quitté le jeu.')
 
 
 def move_snake(serpent,Fruit,Direction):
