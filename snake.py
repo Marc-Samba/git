@@ -65,11 +65,11 @@ def status_game(gameover_on_exit,serpent,hauteur,largeur,taillecase,run):
         #si on dépasse en haut ou en bas on quitte le jeu
         if serpent[-1][0]>=hauteur//taillecase or serpent[-1][0]<0:
             run=False
-            logger.error('vous êtes sorti de la fenêtre de jeu')
+            logger.info('vous êtes sorti de la fenêtre de jeu')
         #si on dépasse sur les côtés on quitte le jeu
         elif serpent[-1][1]>=largeur//taillecase or serpent[-1][1]<0:
             run=False
-            logger.error('vous êtes sorti de la fenêtre de jeu')
+            logger.info('vous êtes sorti de la fenêtre de jeu')
     else :
         #si on va trop bas on remonte la tête à la première ligne
         if serpent[-1][0]>=hauteur//taillecase: 
@@ -160,7 +160,7 @@ def process_event(run,Direction):
                 Direction=LEFT
         elif event.type==pygame.QUIT:
             run=False
-            logger.critical('Vous avez quitté le jeu.')
+            logger.info('Vous avez quitté le jeu.')
 
 
 def move_snake(serpent,Fruit,Direction):
