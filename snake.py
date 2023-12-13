@@ -208,7 +208,7 @@ def main(*args):
     parser.add_argument('--fps',type=int,default=FPS, help='number of frames per second')
     parser.add_argument('--fruit-color',default=FRUIT_COLOR,help='color of the fruit')
     parser.add_argument('--snake-color',default=SNAKE_COLOR,help='snake color')
-    parser.add_argument('--snake-length',type=int, help='initial length of the snake')
+    parser.add_argument('--snake-length',type=int,default=3, help='initial length of the snake')
     parser.add_argument('--tile-size', type=int,default=TILE_SIZE, help='size of a square tile')
     parser.add_argument('--gameover-on-exit', action='store_true', help='quit the game if we exit the screen')
 
