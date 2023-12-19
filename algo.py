@@ -59,13 +59,13 @@ if __name__=="__main__":
 
         for i in range (1,rows):
             for j in range (1,cols):
-                add=compare(seq2[i],seq1[j],indel,mismatch,match)
-                case1=seq2[i-1]+add
-                case2=seq2[i]+add
-                case3=seq1[j]+add
+                add=compare(seq2[i-1],seq1[j-1],indel,mismatch,match)
+                case1=M[i-1][j-1]+add
+                case2=M[i][j-1]+add
+                case3=M[i-1][j]+add
                 M[i][j]=min(case1,case2,case3)
         
-        return M
+        print (M)
 
     fill_table(sequence[0],variable[0],-2,1,-1)
             
