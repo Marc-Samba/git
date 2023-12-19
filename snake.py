@@ -20,8 +20,8 @@ FPS=10
 TILE_SIZE=20
 LINE=HEIGHT//TILE_SIZE
 COLUMN=WIDTH//TILE_SIZE
-UP=(1,0) 
-DOWN=(-1,0)
+UP=(-1,0) 
+DOWN=(1,0)
 RIGHT=(0,1)
 LEFT=(0,-1)
 
@@ -76,24 +76,26 @@ def status_game(gameover_on_exit,serpent,hauteur,largeur,taillecase,run):
             head=(0,serpent[-1][1])
             serpent.pop()
             serpent.append(head)
-
+            run=True
         #si on va trop haut on redescend la tête à la dernière ligne
         elif serpent[-1][0] < 0 :  
             head=(hauteur//taillecase-1,serpent[-1][1])
             serpent.pop()
             serpent.append(head)
-
+            run=True
         #si on va trop à droite on ramène la tête tout à gauche
         elif serpent[-1][1]>=largeur//taillecase:
             head=(serpent[-1][0],0)
             serpent.pop()
             serpent.append(head)
-        
+            run=True
         #si on va trop à gauche on ramène la tête tout à droite 
         elif serpent[-1][1]<0:
             head=(serpent[-1][0],largeur//taillecase-1)
             serpent.pop()
             serpent.append(head)
+            run=True
+    return(run)
 
 def collision(run, serpent):
     #copie du nouveau serpent
@@ -105,6 +107,9 @@ def collision(run, serpent):
     #on vérifie que la nouvelle tête ne partage pas la même case qu'un autre bout du corps
     if new_headd in snake_copy : 
         run=False
+    else :
+        run=True
+    return run
 
 def draw_checkerboard(ecran,color1, color2,largeur,hauteur,taillecase):
     """affichage de l'écran"""
@@ -161,6 +166,8 @@ def process_event(run,Direction):
         elif event.type==pygame.QUIT:
             run=False
             logger.info('Vous avez quitté le jeu.')
+        
+    return run,Direction
 
 
 def move_snake(serpent,Fruit,Direction):
@@ -179,15 +186,16 @@ def update_fruit(serpent,Fruit,hauteur,largeur):
         Fruit[0]=rd.randint(0,hauteur-1)
         Fruit[1]=rd.randint(0,largeur-1)
         #on a update le fruit donc on renvoie vrai
-        return True
+        return True,Fruit
     else:
         #on a pas update le fruit on renvoie faux
-        return False
+        return False,Fruit
 
 def get_score(booleen, score):
     #si on a update le fruit alors on modifie le score
     if booleen==True:
         score+=1
+    return score
         
 
 def update_display(ecran,color1, color2,color_fruit,couleur_serpent,largeur,hauteur,taillecase,Fruit,serpent,score):
@@ -239,19 +247,21 @@ def main(*args):
 
         clock.tick(args.fps)
         #on process tous les évènements
-        process_event(running,direction)
+        running,direction=process_event(running,direction)
 
         #on fait avancer le serpent
         move_snake(snake,fruit,direction)
 
-        #on compute le nouveau score si le serpent a mangé un fruit
-        get_score(update_fruit(snake,fruit,args.height,args.width),Score) 
-
+        #on compute le nouveau score si le serpent a mangé un fruit et on met à jour la variable fruit
+        boolean,fruit=update_fruit(snake,fruit,args.height,args.width)
+        Score=get_score(boolean,Score) 
+    
+        
         #on appelle la fonction status_game pour terminer le jeu où modifier la tête du serpent selon que l'on a passé l'argument gameover on exit ou non
-        status_game(args.gameover_on_exit,snake,args.height,args.width,args.tile_size,running)  
+        running=status_game(args.gameover_on_exit,snake,args.height,args.width,args.tile_size,running)  
 
         #on appelle la fonction collision pour vérifier que l'on ne se marche pas sur la queue 
-        collision(running,snake)
+        running=collision(running,snake)
 
         #on appelle la fonction update_display qui appelle draw et met à jour l'écran
         update_display(screen,args.bg_color_1,args.bg_color_2,args.fruit_color,args.snake_color,args.width,args.height,args.tile_size,fruit,snake,Score)
