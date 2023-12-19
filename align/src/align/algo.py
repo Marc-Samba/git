@@ -43,6 +43,7 @@ if __name__=="__main__":
             add=Indel
         else:
             add=Mismatch
+        return add
         
     
     def fill_table(seq1,seq2,indel,match,mismatch):
@@ -58,11 +59,15 @@ if __name__=="__main__":
 
         for i in range (1,rows):
             for j in range (1,cols):
-                add=compare(seq2[i],seq1[j])
+                add=compare(seq2[i],seq1[j],indel,mismatch,match)
                 case1=seq2[i-1]+add
                 case2=seq2[i]+add
                 case3=seq1[j]+add
                 M[i][j]=min(case1,case2,case3)
+        
+        return M
+
+    fill_table(sequence[0],variable[0],-2,1,-1)
             
 
 
