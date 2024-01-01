@@ -34,29 +34,60 @@ logger.setLevel(logging.DEBUG)
 
 
 
+class Fruit :
+    def __init__(self,color_fruit,x,y,width,height,tile_size,snake,screen):
+        self._color_fruit=color_fruit
+        self.x=x
+        self.y=y 
+        self.width=width
+        self.height=height
+        self.tile_size=tile_size
+        self.snake=snake
+        self.screen=screen
+
+    def Create_Fruit(self):
+        #création du fruit
+        if self.snake[-1]==(self.x,self.y):
+            flag=True
+            while flag:
+                self.x=rd.randint(0,self.height/self.tile_size-1)
+                self.y=rd.randint(0,self.width/self.tile_size-1)
+                fruit=(self.x,self.y)
+                if fruit in self.snake:
+                    pass
+                else :
+                    flag=False
+
+    def Draw_Fruit(self):
+        fruit_rect=pygame.Rect(self.y*self.tile_size,self.x*self.tile_size,self.tile_size,self.tile_size)
+        pygame.draw.rect(self.screen,self._color_fruit,fruit_rect)
+        
     
+class Snake:
 
-""""def liste_score(args):
-    "construit la liste des scores et la renvoie triée ainsi que la liste des noms correspondant"
-    list_score=[]
-    list_name=[]
-    with open('temporaire.txt', 'w') as f:
-        for line in f :
-            nom, score = line.split
-            list_score.append(score)
-            list_name.append(nom)
-    #créer un dico trier la liste extraite reconstruire le dico 
-    
-    return(liste_score)
+    def __init__(self,color_snake,snake,fruit,width,height,tile_size,screen,direction):
+        self._color_snake=color_snake
+        self.snake=snake
+        self.fruit=fruit
+        self.width=width
+        self.height=height
+        self.tile_size=tile_size
+        self.screen=screen
+        self.direction=direction
 
+    def move_snake(self):
+        if self.snake[-1]==self.fruit: #si on rencontre le fruit on grandit donc on ne retire pas le dernier carré et on en ajoute un nouveau.
+            new_head=tuple(x+y for x,y in zip(self.snake[-1],self.direction))
+            self.snake.append(new_head)
+        else : #si on ne rencontre pas de fruit on fait avancer le serpent
+            self.snake.pop(0) 
+            new_head=tuple(x+y for x,y in zip(self.snake[-1],self.direction))
+            self.snake.append(new_head)
 
-
-def update_score(liste ,new_score,fichier):
-    cette fonction prend le nouveau score et l'ajoute au fichier score_file si il fait parti du top 5. Si c'est un high score on demande le nom au joueur
-    if new_score>liste[0]:
-        lowest_score=liste.pop()
-        on accède au score. il faut maintenant modifier le fichier pour supprimer le plus petit score et le remplacer par ce nouveau
-        """
+    def Draw_Snake(self):
+        for elem in self.snake:
+            point=pygame.Rect(elem[1]*self.tile_size,elem[0]*self.tile_size,self.tile_size,self.tile_size)
+            pygame.draw.rect(self.screen,self._color_snake,point)
 
 
 #fonction qui termine le jeu si gameover on exit est passé en ligne de commande et loupe le snake sinon
