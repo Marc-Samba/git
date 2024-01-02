@@ -26,8 +26,8 @@ def read_args():
 
 
 
-
-def create_self.current_state(state_file):
+#region
+def create_matrice(init_file):
    
 
 def count_neighbors(i,j,self.current_state):
@@ -122,8 +122,8 @@ def output_file(self.current_state,o_file):
             for ligne in self.current_state :
                 new_line= ''.join(map(str, ligne)) #on convertit les éléments de la liste en str et on les concatène
                 fichier.write(new_line+'\n')       #on ajoute la nouvelle ligne au fichier de sorti
-
-
+#endregion
+                
 class GameOfLife:
     def __init__(self, input, output, d, m, f, width, height):
         self.input = input
