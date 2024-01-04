@@ -41,7 +41,7 @@ class GameOfLife:
     def _read_initial_state(self):
         """initialize the state of the game"""
         self._current_state = self._create_matrice()
-
+        logging.info("Initial state read successfully.")
     
     def _count_neighbors(self, i, j):
         """receives the position of a cell and the matrice associated to the state of the game and return the number of living cells around it."""
@@ -117,21 +117,24 @@ class GameOfLife:
         m=len(self._current_state)
         n=len(self._current_state[0])
 
-        if self._empty_file():                 #if the file is empty : after step 1
-            with open(self.output, 'w') as fichier: #opening the output file in writing mode
+        #if the file is empty : after step 1
+        if self._empty_file():                                            
+            with open(self.output, 'w') as fichier:                       #opening the output file in writing mode
                 for i in range (m):
-                    new_line=''                #creating a new line
+                    new_line=''                                           #creating a new line
                     for j in range(n):
                         new_line=new_line+str(self._current_state[i][j])  #adding all the 0 and 1 from the line on by one
                     fichier.write(new_line+'\n')
+            logging.info("Output file completed.")
 
         #the file is already filed we modify it 
         else:
-            with open(self.output,'w') as fichier:          #opening o_file in writing mode
+            with open(self.output,'w') as fichier:     #opening o_file in writing mode
                 fichier.write('')                      #on vide de fichier de l'état précédent
                 for ligne in self._current_state :
                     new_line= ''.join(map(str, ligne)) #on convertit les éléments de la liste en str et on les concatène
                     fichier.write(new_line+'\n')       #on ajoute la nouvelle ligne au fichier de sorti
+            logging.info("Output file modified.")
 
     def run(self):
         self._read_initial_state()
@@ -139,7 +142,7 @@ class GameOfLife:
             self._generate_next_state()
             self._output_file()
             self._step=self._step+1
-
+            logging.info(f"Step {self._step} completed.")
 
 class Pygame:
     def __init__(self,game_of_life):
@@ -179,7 +182,9 @@ class Pygame:
             for j in range (n):
                 new_rect=pygame.Rect((j*SIZE,i*SIZE,SIZE,SIZE))
                 pygame.draw.rect(self._screen,self._cell_color(self.instance_gameoflife._current_state[i][j]),new_rect)
-    
+        logging.debug("Board drawn.")
+
+
     def _process_event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -194,6 +199,7 @@ class Pygame:
 
         #update display
         pygame.display.update()
+
 
     def start(self):
         """If d is activated start displays each state of the game"""
@@ -218,6 +224,8 @@ class Pygame:
 
             #updating display
             self._update_display()
+
+            logging.info(f"Display updated for step {self.instance_gameoflife._step}.")
 
         pygame.quit()
 
@@ -253,7 +261,13 @@ def main():
         game = GameOfLife(args.input, args.output, args.d, args.m, args.f, args.width, args.height)
         game.run()
 
-if __name__=="__main__":
+#configuring logging
+logging.basicConfig(level=logging.DEBUG)
+
+#Create a logger for this module
+logger = logging.getLogger(__name__)
+
+if __name__=="__main__": 
     main()
 
 #il reste a :
@@ -261,7 +275,7 @@ if __name__=="__main__":
 #afficher chaque étape avec pygame si d est activé : v
 #run en tant que module avec main : v
 #faire des classes : v
-#utiliser logging : x
+#utiliser logging : v
 #tester les classes et les fonctions avec pytest : x
 #tester la simulation avec des patterns et un certain nombre d'étape et checker si c'est bon : x
 #using OOP to Store data only inside private members (start with underscore character). This means no direct access to internal data. : v
