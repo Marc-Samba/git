@@ -21,20 +21,20 @@ class GameOfLife:
 
     def _create_matrice(self):
         """this function returns the matrice associated to the initial state of the game"""
+        #initializing the matrix
+        M = [[0 for _ in range(self._width)] for _ in range(self._height)]
+
         with open(self.input, 'r') as fichier:
-            #get the number of line
-            lignes=fichier.readline()
-            N=len(lignes)
-            #creating the matrix
-            M=[[] for i in range (N)]
-            c=0
-            for ligne in fichier:
-                # getting rid of /n
+            for i, ligne in enumerate(fichier):
+                # Get rid of '\n'
                 read_line = ligne.strip()
-                for car in read_line :
-                    M[c].append(int(car))
-                c+=1
-        return(M)
+
+                # Add zeroes and ones to the matrix using index
+                for j, car in enumerate(read_line):
+                    M[i][j] = int(car)
+
+
+            
 
 
 
@@ -88,12 +88,12 @@ class GameOfLife:
     def _apply_rules(self, i, j):
         """returns the new state of a cell"""
         if self._current_state[i][j]==1: #the cell is alive
-            if 1<self._count_neighbors(i,j,self._current_state)<4:
+            if 1<self._count_neighbors(i,j)<4:
                 return(1) #the cell stays alive
             else:
                 return(0) #the cell dies
         else : # the cell is dead
-            if self._count_neighbors(i,j,self._current_state)==3:
+            if self._count_neighbors(i,j)==3:
                 return(1) #the cell becomes a living cell
 
     def _generate_next_state(self):
@@ -104,6 +104,7 @@ class GameOfLife:
         for i in range (m):
             for j in range(n):
                 M[i][j]=self._apply_rules(self._current_state,i,j) 
+        #new state
         self._current_state=M
     
     def _empty_file(self):
@@ -248,7 +249,7 @@ def read_args():
     args = parser.parse_args()
 
     return args
-
+    
 
 def main():
     args = read_args()
