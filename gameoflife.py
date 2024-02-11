@@ -79,10 +79,14 @@ class GameOfLife:
             S+=self._current_state[i-1][n-1]+self._current_state[i-1][n-2]+self._current_state[i][n-2]+self._current_state[i+1][n-2]+self._current_state[i+1][n-1]
 
         #processing the rest of the cells
+        else:
+            for x in range(max(0, i - 1), min(i + 2, m)):
+                for y in range(max(0, j - 1), min(j + 2, n)):
+                    if x != i or y != j:  # Exclude the current cell itself
+                        if self._current_state[x][y] is not None:  # This line was added
+                            S += self._current_state[x][y]
 
-        else :
-            S+=self._current_state[i-1][j-1]+self._current_state[i][j-1]+self._current_state[i+1][j-1]+self._current_state[i+1][j]+self._current_state[i+1][j+1]+self._current_state[i][j+1]+self._current_state[i-1][j+1]+self._current_state[i-1][j]                              
-        
+       
         return(S)
 
     def _apply_rules(self, i, j):
@@ -95,6 +99,8 @@ class GameOfLife:
         else : # the cell is dead
             if self._count_neighbors(i,j)==3:
                 return(1) #the cell becomes a living cell
+            else:
+                return(0)
 
     def _generate_next_state(self):
         """receives the current state of the game and return the new state having applied the rules"""
