@@ -156,9 +156,13 @@ class Pygame:
 
         self._clock = pygame.time.Clock()
 
+        self._run = True
+
+        self.instance_gameoflife._read_initial_state()
+
         self._board = self._draw_board()
 
-        self._run = True
+        
 
 
 
