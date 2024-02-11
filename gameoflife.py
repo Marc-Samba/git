@@ -99,8 +99,7 @@ class GameOfLife:
         else : # the cell is dead
             if self._count_neighbors(i,j)==3:
                 return(1) #the cell becomes a living cell
-            else:
-                return(0)
+        
 
     def _generate_next_state(self):
         """receives the current state of the game and return the new state having applied the rules"""
@@ -124,24 +123,12 @@ class GameOfLife:
         m=len(self._current_state)
         n=len(self._current_state[0])
 
-        #if the file is empty : after step 1
-        if self._empty_file():                                            
-            with open(self.output, 'w') as fichier:                       #opening the output file in writing mode
-                for i in range (m):
-                    new_line=''                                           #creating a new line
-                    for j in range(n):
-                        new_line=new_line+str(self._current_state[i][j])  #adding all the 0 and 1 from the line on by one
-                    fichier.write(new_line+'\n')
-            logging.info("Output file completed.")
-
-        #the file is already filed we modify it 
-        else:
-            with open(self.output,'w') as fichier:     #opening o_file in writing mode
-                fichier.write('')                      #on vide de fichier de l'état précédent
-                for ligne in self._current_state :
-                    new_line= ''.join(map(str, ligne)) #on convertit les éléments de la liste en str et on les concatène
-                    fichier.write(new_line+'\n')       #on ajoute la nouvelle ligne au fichier de sorti
-            logging.info("Output file modified.")
+        with open(self.output,'w') as fichier:     #opening o_file in writing mode
+            fichier.write('')                      #on vide de fichier de l'état précédent
+            for ligne in self._current_state :
+                new_line= ''.join(map(str, ligne)) #on convertit les éléments de la liste en str et on les concatène
+                fichier.write(new_line+'\n')       #on ajoute la nouvelle ligne au fichier de sorti
+        logging.info("Output file modified.")
 
     def run(self):
         self._read_initial_state()
@@ -257,7 +244,7 @@ def read_args():
     parser.add_argument('-f', default=10, type=int, help='number of frames per second to use with pygame.')
     parser.add_argument('--width', default=800, type=int, help='Set the width of the screen.')
     parser.add_argument('--height', default=600, type=int, help='Set the height of the screen')
-    
+
     args = parser.parse_args()
     return args
 
