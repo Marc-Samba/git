@@ -225,7 +225,8 @@ class Pygame:
             self.instance_gameoflife._output_file()
             
             #updating the number of step
-            self.instance_gameoflife_step=self.instance_gameoflife_step+1
+            self.instance_gameoflife._step = self.instance_gameoflife._step + 1
+
 
             #updating display
             self._update_display()
