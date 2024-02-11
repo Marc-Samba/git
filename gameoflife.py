@@ -68,26 +68,29 @@ class GameOfLife:
 
     def _apply_rules(self, i, j):
         """returns the new state of a cell"""
-        if self._current_state[i][j]==1: #the cell is alive
-            if 1<self._count_neighbors(i,j)<4:
-                return(1) #the cell stays alive
+        if self._current_state[i][j] == 1:  # cell is alive
+            if 2 <= self._count_neighbors(i, j) <= 3:
+                return 1  # stays alive
             else:
-                return(0) #the cell dies
-        else : # the cell is dead
-            if self._count_neighbors(i,j)==3:
-                return(1) #the cell becomes a living cell
+                return 0  # dies
+        else:  # cell is dead
+            if self._count_neighbors(i, j) == 3:
+                return 1  # becomes a living cell
+        return 0  #stays dead by default
+
         
 
     def _generate_next_state(self):
         """receives the current state of the game and return the new state having applied the rules"""
         m=len(self._current_state)
         n=len(self._current_state[0])
-        M=copy.deepcopy(self._current_state) #we copy the matrix associated to the current state because we don't want to modify it. We need the same matrice to apply the rules every time
-        for i in range (m):
+        M = [[0] * n for _ in range(m)]  # new matrix for next state
+        for i in range(m):
             for j in range(n):
-                M[i][j]=self._apply_rules(i,j) 
-        #new state
-        self._current_state=M
+                M[i][j] = self._apply_rules(i, j)
+        # Mise à jour de l'état actuel du jeu
+        self._current_state = M
+
     
     def _empty_file(self):
         """return true if the file is empty or false if it isn't"""
@@ -97,15 +100,12 @@ class GameOfLife:
 
     def _output_file(self):
         """takes the current state of the game and modifies the output file"""
-        m=len(self._current_state)
-        n=len(self._current_state[0])
-
-        with open(self.output,'w') as fichier:     #opening o_file in writing mode
-            fichier.write('')                      #on vide de fichier de l'état précédent
-            for ligne in self._current_state :
-                new_line= ''.join(map(str, ligne)) #on convertit les éléments de la liste en str et on les concatène
-                fichier.write(new_line+'\n')       #on ajoute la nouvelle ligne au fichier de sorti
+        with open(self.output, 'w') as fichier:
+            for ligne in self._current_state:
+                new_line = ''.join(map(str, ligne))
+                fichier.write(new_line + '\n')
         logging.info("Output file modified.")
+
 
     def run(self):
         self._read_initial_state()
