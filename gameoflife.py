@@ -103,7 +103,7 @@ class GameOfLife:
         M=copy.deepcopy(self._current_state) #we copy the matrix associated to the current state because we don't want to modify it. We need the same matrice to apply the rules every time
         for i in range (m):
             for j in range(n):
-                M[i][j]=self._apply_rules(self._current_state,i,j) 
+                M[i][j]=self._apply_rules(i,j) 
         #new state
         self._current_state=M
     
