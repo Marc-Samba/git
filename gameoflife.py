@@ -212,7 +212,7 @@ class Pygame:
         #initialising the game
         self.instance_gameoflife._read_initial_state()
 
-        while self.instance_gameoflife._step<self._m and self._run: #while the number of steps is inferior to the number of steps to run and run==True
+        while self.instance_gameoflife._step<self.instance_gameoflife._m and self._run: #while the number of steps is inferior to the number of steps to run and run==True
             
             self._clock.tick(self.instance_gameoflife._f)
             #processing event
