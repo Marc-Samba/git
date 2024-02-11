@@ -249,13 +249,17 @@ def read_args():
     parser = argparse.ArgumentParser(description="An implementation of game of life")
     #adding all arguments
 
+
     parser.add_argument('--input', type=str, help='Path to the initial state file.')
     parser.add_argument('--output', type=str, help='Path to the output file.')
-    parser.add_argument('-d',action='store_true', help='display flag')
-    parser.add_argument('-m', default=20, help='Set the number of steps to run when display is off.')
-    parser.add_argument('-f',default=10,help='number of frames per second to use with pygame.')
-    parser.add_argument('--width',default=800, help='Set the width of the screen.')
-    parser.add_argument('--height',default=600,help='Set the height of the screen')
+    parser.add_argument('-d', action='store_true', help='display flag')
+    parser.add_argument('-m', default=20, type=int, help='Set the number of steps to run when display is off.')
+    parser.add_argument('-f', default=10, type=int, help='number of frames per second to use with pygame.')
+    parser.add_argument('--width', default=800, type=int, help='Set the width of the screen.')
+    parser.add_argument('--height', default=600, type=int, help='Set the height of the screen')
+    
+    args = parser.parse_args()
+    return args
 
     args = parser.parse_args()
 
