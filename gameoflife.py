@@ -46,50 +46,25 @@ class GameOfLife:
         logging.info("Initial state read successfully.")
     
     def _count_neighbors(self, i, j):
-        """receives the position of a cell and the matrice associated to the state of the game and return the number of living cells around it."""
-    
-        m=len(self._current_state)
-        n=len(self._current_state[0])
-        S=0
+        """Receives the position of a cell and the matrix associated with the state of the game and returns the number of living cells around it."""
+        
+        m = len(self._current_state)
+        n = len(self._current_state[0])
+        S = 0
 
-        #processing the corner cells
-        if i==0 and j==0: #top left cell
-            S+=self._current_state[0][1]+self._current_state[1][0]+self._current_state[1][1]
-        elif i==0 and j==n-1: #top right cell
-            S+=self._current_state[0][n-2]+self._current_state[1][n-2]+self._current_state[1][n-1]
-        elif i==m-1 and j==0: #bottom left cell
-            S+=self._current_state[m-2][0]+self._current_state[m-2][1]+self._current_state[m-1][1]
-        elif i==m-1 and j==n-1: #bottom right cell
-            S+=self._current_state[m-1][n-2]+self._current_state[m-2][n-2]+self._current_state[m-2][n-1]
-        
-        #processing the side cells
-        
-        #cells on top
-        elif i==0 and 0<j<n-1: 
-            S+=self._current_state[0][j-1]+self._current_state[1][j-1]+self._current_state[1][j]+self._current_state[1][j+1]+self._current_state[0][j+1]
-        
-        #cells on the bottom
-        elif i==m-1 and 0<j<n-1: 
-            S+=self._current_state[m-1][j-1]+self._current_state[m-2][j-1]+self._current_state[m-2][j]+self._current_state[m-2][j+1]+self._current_state[m-1][j+1]
-
-        #cells on the left side
-        elif j==0 and 0<i<m-1:
-            S+=self._current_state[i-1][0]+self._current_state[i-1][1]+self._current_state[i][1]+self._current_state[i+1][1]+self._current_state[i+1][0]
-        
-        #cells on the right side
-        elif j==n-1 and 0<i<m-1:
-            S+=self._current_state[i-1][n-1]+self._current_state[i-1][n-2]+self._current_state[i][n-2]+self._current_state[i+1][n-2]+self._current_state[i+1][n-1]
-
-        #processing the rest of the cells
-        else:
-            for x in range(max(0, i - 1), min(i + 2, m)):
-                for y in range(max(0, j - 1), min(j + 2, n)):
-                    if x != i or y != j:  # Exclude the current cell itself
-                        if self._current_state[x][y] is not None:  # This line was added
+        # Iterate over the neighboring cells
+        for x in range(max(0, i - 1), min(i + 2, m)):
+            for y in range(max(0, j - 1), min(j + 2, n)):
+                # Exclude the current cell itself
+                if x != i or y != j:
+                    # Check if the indices are valid
+                    if 0 <= x < m and 0 <= y < n:
+                        # Add the value of the neighbor cell if it's not None
+                        if self._current_state[x][y] is not None:
                             S += self._current_state[x][y]
 
-       
-        return(S)
+        return S
+
 
     def _apply_rules(self, i, j):
         """returns the new state of a cell"""
