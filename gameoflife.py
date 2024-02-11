@@ -150,6 +150,7 @@ class Pygame:
 
     def _draw_board(self):
         """draws the current state using pygame"""
+        self._screen.fill((255, 255, 255))
         m=len(self.instance_gameoflife._current_state)
         n=len(self.instance_gameoflife._current_state[0])
         SIZE=self._taillecase()
@@ -179,8 +180,9 @@ class Pygame:
     def start(self):
         """If d is activated start displays each state of the game"""
 
-        #initialising the game
-        self.instance_gameoflife._read_initial_state()
+        """#initialising the game
+        self.instance_gameoflife._read_initial_state()"""
+        self._draw_board()
 
         while self.instance_gameoflife._step<self.instance_gameoflife._m and self._run: #while the number of steps is inferior to the number of steps to run and run==True
             
