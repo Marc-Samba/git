@@ -20,8 +20,8 @@ class GameOfLife:
         
 
     def _create_matrice(self):
-        """this function returns the matrice associated to the initial state of the game"""
-        #initializing the matrix
+        """this function returns the matrix associated with the initial state of the game"""
+        # initializing the matrix
         M = [[0 for _ in range(self._width)] for _ in range(self._height)]
 
         with open(self.input, 'r') as fichier:
@@ -29,12 +29,14 @@ class GameOfLife:
                 # Get rid of '\n'
                 read_line = ligne.strip()
 
-                # Add zeroes and ones to the matrix using index
+                # Add zeros and ones to the matrix using index
                 for j, car in enumerate(read_line):
-                    M[i][j] = int(car)
-        return(M)
+                    if car == '0' or car == '1':  # Ensure only 0s and 1s are added
+                        M[i][j] = int(car)
+                    else:
+                        raise ValueError("Invalid character in input file. Only 0s and 1s are allowed.")
 
-            
+        return (M)
 
 
 
