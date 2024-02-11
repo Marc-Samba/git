@@ -100,12 +100,20 @@ class GameOfLife:
             return ligne == "" #return true if the output file is empty
 
     def _output_file(self):
-        """takes the current state of the game and modifies the output file"""
+        """Modifies the output file with the current state of the game."""
         with open(self.output, 'w') as fichier:
-            for ligne in self._current_state:
-                new_line = ''.join(map(str, ligne))
-                fichier.write(new_line + '\n')
+            # If the file is empty, fill it with the initial state
+            if self._empty_file():
+                for ligne in self._current_state:
+                    new_line = ''.join(map(str, ligne))
+                    fichier.write(new_line + '\n')
+            # If the file is not empty, update it with the current state
+            else:
+                for ligne in self._current_state:
+                    new_line = ''.join(map(str, ligne))
+                    fichier.write(new_line + '\n')
         logging.info("Output file modified.")
+
 
 
     def run(self):
