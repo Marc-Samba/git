@@ -32,7 +32,7 @@ class GameOfLife:
                 # Add zeroes and ones to the matrix using index
                 for j, car in enumerate(read_line):
                     M[i][j] = int(car)
-
+        return(M)
 
             
 
